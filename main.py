@@ -1,26 +1,38 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
+import request
+import logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)s: %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 
-def count_list():
-    l = [{'name': 12},
-         {'age': 333}]
-    x = 0
-    for i in l:
-        x += 1
-    return x
-
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-    print(count_list())
- 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    logging.warn("dasdasdasd")
+    a = [1, 2, 3, 4, 5, 6, 7, 9, 8, 0]
+    b = len(a)
+    d = list(range(b))
+    Max = 0
+    Min = 0
+    for i in list(range(b)):
+        for j in list(range(i+1, b)):
+            if a[i] < a[j]:
+                Max = a[j]
+                Min = a[i]
+            else:
+                Max = a[i]
+                Min = a[j]
+            e = Max
+            a[j] = Min
+            a[i] = e
+        print(a)
+    print(a)
+
+
+
+
+
+
