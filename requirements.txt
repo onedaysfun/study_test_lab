@@ -1,0 +1,4 @@
+django_request==1.6.3
+loguru==0.7.2
+pytest==7.2.0
+Requests==2.31.0
