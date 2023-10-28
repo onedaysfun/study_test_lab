@@ -1,8 +1,8 @@
 import logging
 import json
 import requests
-LOG_FORMAT = "%(asctime)s.%(msecs)04d - %(levelname) - %(message)s"
-DATA_FORMAT = "%Y - %m - %d %H:%M:%S"
+LOG_FORMAT = "%(asctime)s.%(msecs)04d - %(levelname)s - %(message)s"
+DATA_FORMAT = "%Y-%m-%d %H:%M:%S"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATA_FORMAT)
 need_req_log = True
 need_resp_log = True
@@ -37,14 +37,22 @@ class HttpClient:
             params=params
         )
         if need_req_log:
-            json_cookies = json.dumps(cookies, sort_keys=True, indent=4).__str__()
-            _log_req_body = f"<HttpRequest>: [{method.upper()}] {url}\ntime_put:{time_out}\nheaders:{headers}\ncookies:{json_cookies}\nparams:{params}\n"
+            json_cookies = {}
+            json_headers = {}
+            json_params = {}
+            if cookies:
+                json_cookies = json.dumps(cookies, sort_keys=True, indent=4).__str__()
+            if headers:
+                json_headers = json.dumps(headers, sort_keys=True, indent=4).__str__()
+            if params:
+                json_params = json.dumps(params, sort_keys=True, indent=4).__str__()
+            _log_req_body = f"<HttpRequest>: [{method.upper()}] {url}\ntime_put:{time_out}\nheaders:{json_headers}\ncookies:{json_cookies}\nparams:{json_params}\n"
             logging.info(_log_req_body)
         if need_resp_log:
             try:
                 req_json = _req.json()
                 json_body = json.dumps(req_json, sort_keys=True, indent=4).__str__()
-                _log_resp_body = f"<HttpResponse> [[{method.upper()}] {url}\nstatus_code:{_req.status_code}\ncontent:{json_body}\n"
+                _log_resp_body = f"<HttpResponse> [{method.upper()}] {url}\nstatus_code:{_req.status_code}\ncontent:{json_body}\n"
                 logging.info(_log_resp_body)
             except Exception as e:
                 logging.warning(e)
@@ -124,3 +132,10 @@ class HttpClient:
             self.params = params
         elif kwargs[kw]:
             self.params = kwargs[kw]
+
+
+if __name__ == '__main__':
+    url = "https://baike.baidu.com/api/wikihome/homecmsdata"
+    method = "get"
+    cookies = {}
+    resp = HttpClient().set_url(url).set_method(method).send_http()
