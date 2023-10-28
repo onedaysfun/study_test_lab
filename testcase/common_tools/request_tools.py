@@ -1,11 +1,13 @@
-import logging
 import json
 import requests
-LOG_FORMAT = "%(asctime)s.%(msecs)04d - %(levelname)s - %(message)s"
-DATA_FORMAT = "%Y-%m-%d %H:%M:%S"
-logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATA_FORMAT)
+from loguru import logger
 need_req_log = True
 need_resp_log = True
+need_add_log_in_file = False
+# add log in file
+if need_add_log_in_file:
+    logger.add("logfile/test.log", encoding="utf-8", rotation="500MB",
+               enqueue=True, retention="7 days")
 
 
 class HttpClient:
@@ -47,15 +49,15 @@ class HttpClient:
             if params:
                 json_params = json.dumps(params, sort_keys=True, indent=4).__str__()
             _log_req_body = f"<HttpRequest>: [{method.upper()}] {url}\ntime_put:{time_out}\nheaders:{json_headers}\ncookies:{json_cookies}\nparams:{json_params}\n"
-            logging.info(_log_req_body)
+            logger.info(_log_req_body)
         if need_resp_log:
             try:
                 req_json = _req.json()
                 json_body = json.dumps(req_json, sort_keys=True, indent=4).__str__()
                 _log_resp_body = f"<HttpResponse> [{method.upper()}] {url}\nstatus_code:{_req.status_code}\ncontent:{json_body}\n"
-                logging.info(_log_resp_body)
+                logger.info(_log_resp_body)
             except Exception as e:
-                logging.warning(e)
+                logger.warning(e)
         return _req
 
     def set_method(self, method: str, **kwargs):
